@@ -1,4 +1,5 @@
 import {
+  Global,
   HttpCode,
   HttpStatus,
   Injectable,
@@ -9,20 +10,19 @@ import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { nanoid } from 'nanoid';
 
 @Injectable()
+@Global()
 export class UrlShortenerService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
   public async minifyUrl(url: string) {
     const appUrl = 'http://localhost:3000'; // to move to config
     const shortId = nanoid(6);
     console.log({ shortId });
-    try {
-      this.redis.set(shortId, url);
-      return `${appUrl}/${shortId}`;
-    } catch (error) {
+    this.redis.set(shortId, url).catch((err) => {
       throw new InternalServerErrorException(
         'Cannot process you url for minification',
       );
-    }
+    });
+    return `${appUrl}/${shortId}`;
   }
 
   public async resolveUrl(shortUrl: string) {

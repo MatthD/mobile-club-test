@@ -17,4 +17,9 @@ export class MessageService {
   findAll(): Promise<Message[]> {
     return this.messageRepository.find();
   }
+
+  parseUrls(texte: string, caractereSubstitution: string = '%S') {
+    const regex = /((?:https?):\/\/[^\s]+)/gi;
+    return texte.replace(regex, caractereSubstitution.repeat(10));
+  }
 }

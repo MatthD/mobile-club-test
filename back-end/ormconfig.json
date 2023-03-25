@@ -1,10 +1,12 @@
 {
   "type": "postgres",
-  "host": "postgres",
+  "host": "localhost",
   "port": 5432,
   "username": "mobile-club",
   "password": "mobile-club",
   "database": "url-shortener",
-  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "entities": [
+    "dist/**/*.entity{.ts,.js}"
+  ],
   "synchronize": true
 }
