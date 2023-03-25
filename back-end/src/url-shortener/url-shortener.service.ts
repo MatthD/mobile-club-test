@@ -14,7 +14,7 @@ import { nanoid } from 'nanoid';
 export class UrlShortenerService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
   public async minifyUrl(url: string) {
-    const appUrl = 'http://localhost:3000'; // to move to config
+    const appUrl = 'http://localhost:4000'; // to move to config
     const shortId = nanoid(6);
     console.log({ shortId });
     this.redis.set(shortId, url).catch((err) => {
@@ -22,12 +22,16 @@ export class UrlShortenerService {
         'Cannot process you url for minification',
       );
     });
-    return `${appUrl}/${shortId}`;
+    return `${appUrl}/r/${shortId}`;
   }
 
-  public async resolveUrl(shortUrl: string) {
+  public async resolveShortUrl(shortUrl: string) {
     const { pathname } = new URL(shortUrl);
-    const shortId = pathname.slice(1);
+    const shortId = pathname.replace('/r', ''); // TODO this can be done more dinamically
+    return this.resolveById(shortId);
+  }
+
+  public async resolveById(shortId: string) {
     const completeUrl = await this.redis.get(shortId).catch((error) => {
       throw new InternalServerErrorException({
         HttpCode: HttpStatus.NOT_FOUND,

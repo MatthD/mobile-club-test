@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Redirect, Get, Param } from '@nestjs/common';
 import { UrlShortenerService } from './url-shortener.service';
 import { MinifyUrlDto, ResolveUrlDto } from './url-shortener.dto';
 
@@ -16,7 +16,15 @@ export class UrlShortenerController {
   @Post('resolve')
   public async resolveUrl(@Body() dto: ResolveUrlDto) {
     const { url } = dto;
-    const longUrl = await this.urlShortenerService.resolveUrl(url);
+    const longUrl = await this.urlShortenerService.resolveShortUrl(url);
     return { url: longUrl };
+  }
+
+  @Get('r/:id')
+  @Redirect()
+  public async redirectUrl(@Param('id') id) {
+    const longUrl = await this.urlShortenerService.resolveById(id);
+    console.log({ longUrl });
+    return { url: longUrl, statusCode: 302 };
   }
 }
