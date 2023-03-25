@@ -26,7 +26,7 @@ export class UrlShortenerService {
 
   public async resolveShortUrl(shortUrl: string) {
     const { pathname } = new URL(shortUrl);
-    const shortId = pathname.replace('/r', ''); // TODO this can be done more dinamically
+    const shortId = pathname.replace('/r/', ''); // TODO this can be done more dinamically
     return this.resolveById(shortId);
   }
 
