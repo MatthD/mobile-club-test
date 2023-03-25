@@ -24,7 +24,6 @@ export class UrlShortenerController {
   @Redirect()
   public async redirectUrl(@Param('id') id) {
     const longUrl = await this.urlShortenerService.resolveById(id);
-    console.log({ longUrl });
     return { url: longUrl, statusCode: 302 };
   }
 }

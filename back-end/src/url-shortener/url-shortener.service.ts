@@ -14,9 +14,8 @@ import { nanoid } from 'nanoid';
 export class UrlShortenerService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
   public async minifyUrl(url: string) {
-    const appUrl = 'http://localhost:4000'; // to move to config
+    const appUrl = 'http://localhost:4000'; // to move to config service
     const shortId = nanoid(6);
-    console.log({ shortId });
     this.redis.set(shortId, url).catch((err) => {
       throw new InternalServerErrorException(
         'Cannot process you url for minification',
