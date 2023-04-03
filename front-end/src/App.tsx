@@ -23,32 +23,35 @@ function App() {
     }
   };
 
+  // TODO can be shared with backend
+
   return (
     <div className="bg-main-blue min-h-screen">
       <header className="container mx-auto py-14 flex justify-between">
         <img src={logo} className="App-logo" alt="logo" />
-        <h1 className="text-white font-bold text-2xl">
-          URL shortener
-        </h1>
+        <h1 className="text-white font-bold text-2xl">URL shortener</h1>
       </header>
       <section className="container mx-auto py-8">
         <div
           data-cy="messageContainer"
           className="p-8 flex flex-col gap-6 items-center bg-white rounded-2xl"
         >
-          <div
-            className="font-semibold text-xl"
-          >
+          <div className="font-semibold text-xl">
             Add a few messages to ensure that everything is working correctly :
           </div>
-          {data?.messages.map((message) => (
-            <div key={message.id}>{message.message}</div>
-          ))}
+          {data?.messages.map((message) => {
+            // yeah let me my hoisted helper function 😂
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            const messageWithUrlLink = replaceUrls(message.message);
+            return (
+              <div
+                key={message.id}
+                dangerouslySetInnerHTML={{ __html: messageWithUrlLink }}
+              />
+            );
+          })}
           <div className="font-semibold">
-            <form
-              className="flex gap-4"
-              onSubmit={onSubmit}
-            >
+            <form className="flex gap-4" onSubmit={onSubmit}>
               <input
                 data-cy="messageInput"
                 placeholder="Your message"
@@ -69,6 +72,12 @@ function App() {
       </section>
     </div>
   );
+}
+
+// TODO this has to be shared regex with backend and a more JSX way like react-html-parser
+function replaceUrls(text: string): string {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, '<a href="$1" class="underline"=>$1</a>');
 }
 
 export default App;
